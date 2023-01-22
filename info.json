@@ -1,11 +1,11 @@
 {
-  "name": "FactorIO",
+  "name": "factor-i-o-redux",
   "version": "0.0.1",
   "title": "Factor-I/O",
   "author": "Reika",
   "contact": "",
   "homepage": "",
   "factorio_version" : "1.1",
-  "description": "Adds sensors and actuators designed to read and send various signals which help in automation",
+  "description": "Tinkering with reikas stuff",
   "dependencies": ["base", "DragonIndustries"]
 }

@@ -6,6 +6,9 @@ function initGlobal(markDirty)
 	if not global.signals then
 		global.signals = {}
 	end
+	if not global.firing_radius then
+		global.firing_radius = 224
+	end
 	local signals = global.signals
 	if not signals.combinators then
 		signals.combinators = {}
@@ -92,4 +95,17 @@ end)
 
 script.on_event(defines.events.on_robot_built_entity, function(event)
 	onEntityAdded(event.created_entity)
+end)
+
+script.on_event(defines.events.on_research_finished, function(event)
+
+	if event.research.name == "artillery-shell-range-1" then
+		
+		game.print("Research happened, research is art range!")
+		local research_range_modifier = event.research.effects.attack_range_modifier
+		game.print("Research range modifier is " .. research_range_modifier)
+		global.firing_radius = 224 + research_range_modifier
+		game.print("Set var firing_radius as " .. global.firing_radius)
+
+	end
 end)

@@ -8,34 +8,6 @@ local inputCounts = {}
 
 maximumTickRate = 9999999
 
-function isTrainStop(entity)
-	return entity.type == "train-stop"
-end
-
-function isInserterOrLoader(entity)
-	return entity.type == "loader" or entity.type == "inserter"
-end
-
-function entityHasPower(entity)
-	return entity.electric_buffer_size and entity.electric_buffer_size > 0
-end
-
-function isElectricPole(entity)
-	return entity.type == "electric-pole"
-end
-
-function isLogiChest(entity)
-	return entity.type == "logistic-container" or entity.type == "roboport"
-end
-
-function isTank(entity)
-	return entity.type == "storage-tank"
-end
-
-function isChest(entity)
-	return (entity.type == "container" or entity.type == "logistic-container")-- and entity.get_inventory(defines.inventory.chest)
-end
-
 function getTickRate(id)
 	return tickRates[id]
 end
@@ -246,37 +218,5 @@ function addCombinator(variant, callFunc, validFunc, tickRate, rampedTickRate, i
 		log("Added combinator '" .. variant .. "', calls '" .. serpent.block(callFunc) .. "' @ " .. tickRate)
 		
 		return entity
-	end
-end
-
-function addCombinatorWithInput(variant, inputCount, callFunc, validFunc, tickRate, rampedTickRate)
-	local entity = addCombinator(variant, callFunc, validFunc, tickRate, rampedTickRate)
-	
-	if data and data.raw and not game then
-		entity.item_slot_count = 1+inputCount
-	end
-	
-	inputCounts[variant] = inputCount
-end
-
-function addMultiCombinator(variant, signals, callFunc, validFunc, tickRate, rampedTickRate, isActuator)
-	local entity = addCombinator(variant, callFunc, validFunc, tickRate, rampedTickRate, isActuator)
-	
-	if data and data.raw and not game then
-		for _,name in pairs(signals) do
-			local signal = {
-				type = "virtual-signal",
-				name = name,
-				icon = "__FactorIO__/graphics/icons/" .. name .. ".png",
-				icon_size = 32,
-				icon_mipmaps = 0,
-				subgroup = "virtual-signal-special",
-				order = variant,
-				localised_name = {"signal-type." .. name},
-			}
-			data:extend({signal})
-		end
-		data.raw["virtual-signal"][variant] = nil --delete the base type
-		entity.item_slot_count = #signals
 	end
 end
