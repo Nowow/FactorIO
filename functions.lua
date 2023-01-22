@@ -173,7 +173,7 @@ function addCombinator(variant, callFunc, validFunc, tickRate, rampedTickRate, i
 	
 	if data and data.raw and not game then
 		local name = "combinator-" .. variant
-		local ico = "__FactorIO__/graphics/icons/" .. variant .. ".png"
+		local ico = "__factor-i-o-redux__/graphics/icons/" .. variant .. ".png"
 		local entity = table.deepcopy(data.raw["constant-combinator"]["constant-combinator"])
 		entity.name = name
 		entity.minable.result = name
