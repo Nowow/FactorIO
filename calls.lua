@@ -18,7 +18,9 @@ function getNearEnemies(entity) --stagger calls to this one
 			table.insert(forces, game.forces["biter_faction_" .. i])
 		end
 	end
-	return #entity.surface.find_entities_filtered({type = "unit", area = {{entity.position.x-24, entity.position.y-24}, {entity.position.x+24, entity.position.y+24}}, force = forces})
+	return #entity.surface.find_entities_filtered(
+		{type = "unit", area = {{entity.position.x-24, entity.position.y-24}, {entity.position.x+24, entity.position.y+24}}, force = forces}
+	)
 end
 
 function getNearEnemyStructures(entity)

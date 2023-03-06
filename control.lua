@@ -2,12 +2,35 @@ require "config"
 require "prototypes.combinators"
 require "functions"
 
-function initGlobal(markDirty)
+local function updateFiringRangeVar()
+	if not global.firing_radius then
+		global.firing_radius = 224
+	end
+	local artillery_range_research = game.forces.player.technologies["artillery-shell-range-1"]
+	local research_level = artillery_range_research.level - 1
+	game.print("Research level is " .. research_level)
+
+	local research_range_modifier = 0
+	for _, effect in pairs(artillery_range_research.effects) do
+		if effect.type == "artillery-range" then
+			research_range_modifier = effect.modifier
+			break
+		end
+	end
+	game.print("Research range modifier is " .. research_range_modifier)
+
+	global.firing_radius = 224 + math.floor(224 * research_range_modifier*research_level) - 20
+	game.print("Set var firing_radius as " .. global.firing_radius)
+
+
+end
+
+function initGlobal()
 	if not global.signals then
 		global.signals = {}
 	end
 	if not global.firing_radius then
-		global.firing_radius = 224
+		updateFiringRangeVar()
 	end
 	local signals = global.signals
 	if not signals.combinators then
@@ -17,8 +40,6 @@ function initGlobal(markDirty)
 	for _,entry in pairs(signals.combinators) do
 		if not entry.data then entry.data = {} end
 	end
-	
-	signals.dirty = markDirty
 end
 
 script.on_configuration_changed(function(data)
@@ -67,12 +88,12 @@ local function onEntityAdded(entity)
 				entry.tick_rate = ramp
 			end
 			global.signals.combinators[entity.unit_number] = entry
-			--[[
+			
 			game.print("Added combinator of type " .. global.signals.combinators[entity.unit_number].id .. ", tick rate of " .. rate .. " with offset of " .. global.signals.combinators[entity.unit_number].tick_offset)
 			if ramp then
 				game.print("Ramping from " .. entry.base_tick_rate .. " to " .. entry.ramp_rate)
 			end
-			--]]
+			
 		end
 	end
 end
@@ -100,12 +121,7 @@ end)
 script.on_event(defines.events.on_research_finished, function(event)
 
 	if event.research.name == "artillery-shell-range-1" then
-		
 		game.print("Research happened, research is art range!")
-		local research_range_modifier = event.research.effects.attack_range_modifier
-		game.print("Research range modifier is " .. research_range_modifier)
-		global.firing_radius = 224 + research_range_modifier
-		game.print("Set var firing_radius as " .. global.firing_radius)
-
+		updateFiringRangeVar()
 	end
 end)
